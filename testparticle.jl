@@ -103,7 +103,7 @@ m\frac{d\mathbf{v}}{dt} = q(\mathbf{E} + \mathbf{v}\times\mathbf{B}) \tag{1}
 # ╔═╡ bbcae7e7-2bdb-4a9c-8137-0c64cbc533b1
 md"""
 
-## 社区生态
+## Julia社区生态
 
 1. `DifferentialEquations`是社区中开发最早，规模最大的包之一。其中，`OrdinaryDiffEq`是一个针对常微分方程的通用求解库。
 
@@ -313,7 +313,7 @@ end
 
 # ╔═╡ 56ee3992-c701-41bc-a5df-679a76ec3e48
 md"""
-## 展示：电子和质子
+## 展示：电子和质子运动
 $(Resource("https://raw.githubusercontent.com/henry2004y/TestParticlePresentation/master/double_trajectories_static_B.png"))
 """
 
@@ -325,12 +325,12 @@ $(Resource("https://raw.githubusercontent.com/henry2004y/TestParticlePresentatio
 
 # ╔═╡ fec5ab30-22a4-4726-9b05-eda55b290b66
 md"""
-## 磁层粒子运动
+## 展示：磁层粒子运动
 - 多粒子体系
   - `EnsembleProblem`内存开销问题
   - 额外的并行方法
 
-$(Resource("https://raw.githubusercontent.com/henry2004y/TestParticlePresentation/master/electron_fixedtime_pm0.5RE_EGI_t1298.mp4", :width => 600, :autoplay => "", :loop => ""))
+$(Resource("https://raw.githubusercontent.com/henry2004y/TestParticlePresentation/master/electron_fixedtime_pm0.5RE_EGI_t1298.mp4", :autoplay => "", :loop => ""))
 """
 
 # ╔═╡ f3b73120-5e71-496f-8e6b-cac7be04bcf5
@@ -2086,7 +2086,7 @@ version = "3.5.0+0"
 # ╟─cd16c734-bf02-4797-9c60-dcb54513fff0
 # ╟─bd3af018-1bf2-4200-84bd-35f596b723ce
 # ╟─5791598a-6fbb-11ed-3f03-e7f48288a468
-# ╠═5f976621-9acd-474a-a836-74f502274754
+# ╟─5f976621-9acd-474a-a836-74f502274754
 # ╟─4bf7aa87-d070-4389-8670-090a99100370
 # ╟─bbcae7e7-2bdb-4a9c-8137-0c64cbc533b1
 # ╟─dc580613-f43c-4047-9e2a-aa55d6ac113f
