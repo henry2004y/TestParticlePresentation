@@ -6,16 +6,13 @@ using InteractiveUtils
 
 # ╔═╡ cd16c734-bf02-4797-9c60-dcb54513fff0
 begin
-   using TestParticle
-   using TestParticle: get_gc, getB_dipole, getE_dipole, sph2cart, Rₑ
-   using TestParticleMakie
-   using OrdinaryDiffEq
-   using StaticArrays
-   using LinearAlgebra
-   import WGLMakie as WM
-   using JSServe
-   Page()
-   using PlutoUI
+    using TestParticle
+    using TestParticle: get_gc, getB_dipole, getE_dipole, sph2cart, Rₑ
+    using TestParticleMakie
+    using OrdinaryDiffEq
+    using StaticArrays
+    using LinearAlgebra
+    using PlutoUI
 end
 
 # ╔═╡ e53ae15f-5ad8-4e36-9a20-f9e74a24747a
@@ -48,32 +45,23 @@ md"""
 
 图示： 场 ---> 粒子
 
+$(Resource("https://www.schoolphysics.co.uk/age14-16/Electricity%20and%20magnetism/Current%20electricity/text/Particles_and_fields/images/2.png"))
+
 ## 测试粒子的意义
 
 - 求解高中物理题
-- 研究粒子在复杂外场中的行为
-- 解释集体运动模式
-- 代替昂贵的实验
-"""
 
-# ╔═╡ 078f5acb-63d5-4b28-8a85-169a51e0ab11
-begin
-	# Magnetic field
-	B(x) = SA[0, 0, 1e-8]
-	# Electric field
-	E(x) = SA[0, 0, 0]
-	# Initial conditions
-	x0 = [1.0, 0.0, 0.0]
-	v0 = [0.0, 1.0, 0.1]
-	stateinit = [x0..., v0...]
-	tspan = (0, 20)
-	# Assemble particle + fields
-	param = prepare(E, B, species=Proton)
-	prob = ODEProblem(trace!, stateinit, tspan, param)
-	# Trace trajectory and save positions & velocities
-	sol = solve(prob, Tsit5(); save_idxs=[1,2,3,4,5,6])
-	WM.plot(sol)
-end
+
+- 研究粒子在复杂外场中的行为
+
+
+- 解释集体运动模式
+
+
+- 代替昂贵的实验
+
+$(Resource("https://raw.githubusercontent.com/henry2004y/TestParticlePresentation/master/single_trajectory_static_B.png"))
+"""
 
 # ╔═╡ 4bf7aa87-d070-4389-8670-090a99100370
 md"""
@@ -306,79 +294,34 @@ md"""
 """
 
 # ╔═╡ 39135c86-8585-43a3-acd6-42f012aac65b
-sol
+begin
+	# Magnetic field
+	B(x) = SA[0, 0, 1e-8]
+	# Electric field
+	E(x) = SA[0, 0, 0]
+	# Initial conditions
+	x0 = [1.0, 0.0, 0.0]
+	v0 = [0.0, 1.0, 0.1]
+	stateinit = [x0..., v0...]
+	tspan = (0, 20)
+	# Assemble particle + fields
+	param = prepare(E, B, species=Proton)
+	prob = ODEProblem(trace!, stateinit, tspan, param)
+	# Trace trajectory and save positions & velocities
+	sol = solve(prob, Tsit5(); save_idxs=[1,2,3,4,5,6])
+end
 
 # ╔═╡ 56ee3992-c701-41bc-a5df-679a76ec3e48
 md"""
 ## 展示：电子和质子
+$(Resource("https://raw.githubusercontent.com/henry2004y/TestParticlePresentation/master/double_trajectories_static_B.png"))
 """
-
-# ╔═╡ 3b37a258-a97e-44c6-aee8-e2af7ccd62cc
-let
-	B(x) = SA[0, 0, 1e-11]
-	E(x) = SA[0, 0, 5e-13]
-	x0 = [0.0, 0.0, 0.0]
-	u0 = [1.0, 0.0, 0.0]
-	stateinit = [x0..., u0...]
-
-	param_electron = prepare(E, B, species=Electron)
-	tspan_electron = (0.0, 15.0)
-
-	param_proton = prepare(E, B, species=Proton)
-	tspan_proton = (0.0, 5.0)
-
-	prob_e = ODEProblem(trace!, stateinit, tspan_electron, param_electron)
-	prob_p = ODEProblem(trace!, stateinit, tspan_proton, param_proton)
-
-	sol_e = solve(prob_e, Tsit5(); save_idxs=[1,2,3])
-	sol_p = solve(prob_p, Tsit5(); save_idxs=[1,2,3])
-
-	f = WM.Figure()
-	ax = WM.Axis3(f[1,1], aspect=:data, title="Particle trajectories")
-    WM.lines!(sol_e, linewidth=3, label="e")
-	WM.lines!(sol_p, linewidth=3, label="p")
-	#WM.Legend(f[1,2], ax, nbanks=1)
-	f
-end
 
 # ╔═╡ b02ac7ae-0bde-4606-8478-6a31f40d88f6
 md"""
 ## 展示：绝热运动
+$(Resource("https://raw.githubusercontent.com/henry2004y/TestParticlePresentation/master/adiabatic_trajectory_dipole.png"))
 """
-
-# ╔═╡ 41e502ea-a526-42c6-902c-ef6171d3417a
-let
-	Ek = 5e7 # [eV]
-
-	m = TestParticle.mᵢ
-	q = TestParticle.qᵢ
-	c = TestParticle.c
-	Rₑ = TestParticle.Rₑ   
-	invRE = inv(Rₑ)
-
-	# initial velocity, [m/s]
-	v₀ = sph2cart(c*sqrt(1-1/(1+Ek*q/(m*c^2))^2), 0.0, π/4)
-	# initial position, [m]
-	r₀ = sph2cart(2.5*Rₑ, 0.0, π/2)
-	stateinit = [r₀..., v₀...]
-
-	param = prepare(getE_dipole, getB_dipole)
-	tspan = (0.0, 20.0)
-
-	prob = ODEProblem(trace!, stateinit, tspan, param)
-
-	sol = solve(prob, Tsit5(); save_idxs=[1,2,3])
-
-	f = WM.Figure()
-	ax = WM.Axis3(f[1,1], aspect=:data, title="Proton trajectory in a dipole field")
-	l = WM.plot!(sol, color=:blue3)
-	WM.scale!(l, invRE, invRE, invRE)
-
-	for ϕ in range(0, stop=2*π, length=10)
-        WM.lines!(TestParticle.fieldline(ϕ)..., color=:tomato)
-    end
-	f
-end
 
 # ╔═╡ fec5ab30-22a4-4726-9b05-eda55b290b66
 md"""
@@ -405,14 +348,19 @@ md"""
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
-JSServe = "824d6782-a2ef-11e9-3a09-e5662e0c26f9"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 TestParticle = "953b605b-f162-4481-8f7f-a191c2bb40e3"
 TestParticleMakie = "815e1cc4-5742-45dc-845d-1cec70514f1a"
-WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
+
+[compat]
+OrdinaryDiffEq = "~6.33.3"
+PlutoUI = "~0.7.49"
+StaticArrays = "~1.5.11"
+TestParticle = "~0.2.1"
+TestParticleMakie = "~0.1.1"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -421,7 +369,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.3"
 manifest_format = "2.0"
-project_hash = "8a2707dda82ca9bf86b9c811ff9c256ff1da614e"
+project_hash = "2ca6f1e8d566b29d93d3552443181a58a5f44b66"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -585,12 +533,6 @@ deps = ["ArrayInterface", "Static"]
 git-tree-sha1 = "d61300b9895f129f4bd684b2aff97cf319b6c493"
 uuid = "fb6a15b2-703c-40df-9091-08a04967cfa9"
 version = "0.1.11"
-
-[[deps.CodecZlib]]
-deps = ["TranscodingStreams", "Zlib_jll"]
-git-tree-sha1 = "ded953804d019afa9a3f98981d99b33e3db7b6da"
-uuid = "944b1d66-785c-5afd-91f1-9de20f533193"
-version = "0.7.0"
 
 [[deps.ColorBrewer]]
 deps = ["Colors", "JSON", "Test"]
@@ -936,12 +878,6 @@ git-tree-sha1 = "9b02998aba7bf074d14de89f9d37ca24a1a0b046"
 uuid = "78b55507-aeef-58d4-861c-77aaff3498b1"
 version = "0.21.0+0"
 
-[[deps.Ghostscript_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "78e2c69783c9753a91cdae88a8d432be85a2ab5e"
-uuid = "61579ee1-b43e-5ca0-a5da-69d92c66a64b"
-version = "9.55.0+0"
-
 [[deps.Glib_jll]]
 deps = ["Artifacts", "Gettext_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Libiconv_jll", "Libmount_jll", "PCRE2_jll", "Pkg", "Zlib_jll"]
 git-tree-sha1 = "fb83fbe02fe57f2c068013aa94bcdf6760d3a7a7"
@@ -976,12 +912,6 @@ version = "0.9.1"
 git-tree-sha1 = "53bb909d1151e57e2484c3d1b53e19552b887fb2"
 uuid = "42e2da0e-8278-4e71-bc24-59509adca0fe"
 version = "1.0.2"
-
-[[deps.HTTP]]
-deps = ["Base64", "Dates", "IniFile", "Logging", "MbedTLS", "NetworkOptions", "Sockets", "URIs"]
-git-tree-sha1 = "0fa77022fe4b511826b39c894c90daf5fce3334a"
-uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "0.9.17"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg"]
@@ -1048,18 +978,6 @@ git-tree-sha1 = "342f789fd041a55166764c351da1710db97ce0e0"
 uuid = "82e4d734-157c-48bb-816b-45c225c6df19"
 version = "0.6.6"
 
-[[deps.ImageMagick]]
-deps = ["FileIO", "ImageCore", "ImageMagick_jll", "InteractiveUtils", "Libdl", "Pkg", "Random"]
-git-tree-sha1 = "5bc1cb62e0c5f1005868358db0692c994c3a13c6"
-uuid = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
-version = "1.2.1"
-
-[[deps.ImageMagick_jll]]
-deps = ["Artifacts", "Ghostscript_jll", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Libtiff_jll", "Pkg", "Zlib_jll", "libpng_jll"]
-git-tree-sha1 = "124626988534986113cfd876e3093e4a03890f58"
-uuid = "c73af94c-d91f-53ed-93a7-00f77d67a9d7"
-version = "6.9.12+3"
-
 [[deps.ImageMetadata]]
 deps = ["AxisArrays", "ImageAxes", "ImageBase", "ImageCore"]
 git-tree-sha1 = "36cbaebed194b292590cba2593da27b34763804a"
@@ -1081,11 +999,6 @@ version = "1.0.0"
 git-tree-sha1 = "5cd07aab533df5170988219191dfad0519391428"
 uuid = "d25df0c9-e2be-5dd7-82c8-3ad0b3e990b9"
 version = "0.1.3"
-
-[[deps.IniFile]]
-git-tree-sha1 = "f550e6e32074c939295eb5ea6de31849ac2c9625"
-uuid = "83e8ac13-25f8-5344-8a64-a9f2b223428f"
-version = "0.5.1"
 
 [[deps.IntelOpenMP_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1154,18 +1067,6 @@ git-tree-sha1 = "3c837543ddb02250ef42f4738347454f95079d4e"
 uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.21.3"
 
-[[deps.JSON3]]
-deps = ["Dates", "Mmap", "Parsers", "SnoopPrecompile", "StructTypes", "UUIDs"]
-git-tree-sha1 = "84b10656a41ef564c39d2d477d7236966d2b5683"
-uuid = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
-version = "1.12.0"
-
-[[deps.JSServe]]
-deps = ["Base64", "CodecZlib", "Colors", "HTTP", "Hyperscript", "JSON3", "LinearAlgebra", "Markdown", "MsgPack", "Observables", "RelocatableFolders", "SHA", "Sockets", "Tables", "Test", "UUIDs", "WebSockets", "WidgetsBase"]
-git-tree-sha1 = "4cd7c5f723cad3cbbdfb295215e45b15b6924a19"
-uuid = "824d6782-a2ef-11e9-3a09-e5662e0c26f9"
-version = "1.2.9"
-
 [[deps.JpegTurbo]]
 deps = ["CEnum", "FileIO", "ImageCore", "JpegTurbo_jll", "TOML"]
 git-tree-sha1 = "a77b273f1ddec645d1b7c4fd5fb98c8f90ad10a5"
@@ -1207,12 +1108,6 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "f6250b16881adf048549549fba48b1161acdac8c"
 uuid = "c1c5ebd0-6772-5130-a774-d5fcae4a789d"
 version = "3.100.1+0"
-
-[[deps.LERC_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "bf36f528eec6634efc60d7ec062008f171071434"
-uuid = "88015f11-f218-50d7-93a8-a6af411a945d"
-version = "3.0.0+1"
 
 [[deps.LZO_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1291,12 +1186,6 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "9c30530bf0effd46e15e0fdcf2b8636e78cbbd73"
 uuid = "4b2f31a3-9ecc-558c-b454-b3730dcb73e9"
 version = "2.35.0+0"
-
-[[deps.Libtiff_jll]]
-deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "LERC_jll", "Libdl", "Pkg", "Zlib_jll", "Zstd_jll"]
-git-tree-sha1 = "3eb79b0ca5764d4799c06699573fd8f533259713"
-uuid = "89763e89-9b03-5906-acba-b20f662cd828"
-version = "4.4.0+0"
 
 [[deps.Libuuid_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1389,12 +1278,6 @@ git-tree-sha1 = "f04120d9adf4f49be242db0b905bea0be32198d1"
 uuid = "0a4f8689-d25c-4efe-a92b-7142dfc1aa53"
 version = "0.5.4"
 
-[[deps.MbedTLS]]
-deps = ["Dates", "MbedTLS_jll", "MozillaCACerts_jll", "Random", "Sockets"]
-git-tree-sha1 = "03a9b9718f5682ecb107ac9f7308991db4ce395b"
-uuid = "739be429-bea8-5141-9913-cc70e7f3736d"
-version = "1.1.7"
-
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
@@ -1430,12 +1313,6 @@ version = "0.3.4"
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
 version = "2022.2.1"
-
-[[deps.MsgPack]]
-deps = ["Serialization"]
-git-tree-sha1 = "a8cbf066b54d793b9a48c5daa5d586cf2b5bd43d"
-uuid = "99f44e22-a591-53d1-9472-aa23ef4bd671"
-version = "1.1.0"
 
 [[deps.MuladdMacro]]
 git-tree-sha1 = "cac9cc5499c25554cba55cd3c30543cff5ca4fab"
@@ -1808,12 +1685,6 @@ git-tree-sha1 = "e2cc6d8c88613c05e1defb55170bf5ff211fbeac"
 uuid = "efcf1570-3423-57d1-acb7-fd33fddbac46"
 version = "1.1.1"
 
-[[deps.ShaderAbstractions]]
-deps = ["ColorTypes", "FixedPointNumbers", "GeometryBasics", "LinearAlgebra", "Observables", "StaticArrays", "StructArrays", "Tables"]
-git-tree-sha1 = "6b5bba824b515ec026064d1e7f5d61432e954b71"
-uuid = "65257c39-d410-5151-9873-9b3e5be5013e"
-version = "0.2.9"
-
 [[deps.SharedArrays]]
 deps = ["Distributed", "Mmap", "Random", "Serialization"]
 uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
@@ -1934,12 +1805,6 @@ deps = ["Adapt", "DataAPI", "StaticArraysCore", "Tables"]
 git-tree-sha1 = "13237798b407150a6d2e2bce5d793d7d9576e99e"
 uuid = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
 version = "0.6.13"
-
-[[deps.StructTypes]]
-deps = ["Dates", "UUIDs"]
-git-tree-sha1 = "ca4bccb03acf9faaf4137a9abc1881ed1841aa70"
-uuid = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"
-version = "1.10.0"
 
 [[deps.SuiteSparse]]
 deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
@@ -2069,24 +1934,6 @@ git-tree-sha1 = "8351f8d73d7e880bfc042a8b6922684ebeafb35c"
 uuid = "19fa3120-7c27-5ec5-8db8-b0b0aa330d6f"
 version = "0.2.0"
 
-[[deps.WGLMakie]]
-deps = ["Colors", "FileIO", "FreeTypeAbstraction", "GeometryBasics", "Hyperscript", "ImageMagick", "JSServe", "LinearAlgebra", "Makie", "Observables", "RelocatableFolders", "ShaderAbstractions", "SnoopPrecompile", "StaticArrays"]
-git-tree-sha1 = "811c535b28553f3ba9950b8eb67837f3b3c2f9ef"
-uuid = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
-version = "0.7.3"
-
-[[deps.WebSockets]]
-deps = ["Base64", "Dates", "HTTP", "Logging", "Sockets"]
-git-tree-sha1 = "f91a602e25fe6b89afc93cf02a4ae18ee9384ce3"
-uuid = "104b5d7c-a370-577a-8038-80a2059c5097"
-version = "1.5.9"
-
-[[deps.WidgetsBase]]
-deps = ["Observables"]
-git-tree-sha1 = "30a1d631eb06e8c868c559599f915a62d55c2601"
-uuid = "eead4739-05f7-45a1-878c-cee36b57321c"
-version = "0.1.4"
-
 [[deps.WoodburyMatrices]]
 deps = ["LinearAlgebra", "SparseArrays"]
 git-tree-sha1 = "de67fa59e33ad156a590055375a30b23c40299d3"
@@ -2157,12 +2004,6 @@ version = "1.4.0+3"
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
 version = "1.2.12+3"
-
-[[deps.Zstd_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "e45044cd873ded54b6a5bac0eb5c971392cf1927"
-uuid = "3161d3a3-bdf6-5164-811a-617609db77b4"
-version = "1.5.2+0"
 
 [[deps.ZygoteRules]]
 deps = ["MacroTools"]
@@ -2242,11 +2083,10 @@ version = "3.5.0+0"
 
 # ╔═╡ Cell order:
 # ╟─e53ae15f-5ad8-4e36-9a20-f9e74a24747a
-# ╠═cd16c734-bf02-4797-9c60-dcb54513fff0
+# ╟─cd16c734-bf02-4797-9c60-dcb54513fff0
 # ╟─bd3af018-1bf2-4200-84bd-35f596b723ce
-# ╠═5791598a-6fbb-11ed-3f03-e7f48288a468
-# ╟─5f976621-9acd-474a-a836-74f502274754
-# ╟─078f5acb-63d5-4b28-8a85-169a51e0ab11
+# ╟─5791598a-6fbb-11ed-3f03-e7f48288a468
+# ╠═5f976621-9acd-474a-a836-74f502274754
 # ╟─4bf7aa87-d070-4389-8670-090a99100370
 # ╟─bbcae7e7-2bdb-4a9c-8137-0c64cbc533b1
 # ╟─dc580613-f43c-4047-9e2a-aa55d6ac113f
@@ -2254,11 +2094,9 @@ version = "3.5.0+0"
 # ╟─164d6f9c-98cd-44d3-b443-5ee0d7fb146b
 # ╟─4c3be683-1d11-42d1-916c-b8318c0ecf3f
 # ╟─3fa20598-d32e-40b6-98e9-06496027c646
-# ╠═39135c86-8585-43a3-acd6-42f012aac65b
+# ╟─39135c86-8585-43a3-acd6-42f012aac65b
 # ╟─56ee3992-c701-41bc-a5df-679a76ec3e48
-# ╟─3b37a258-a97e-44c6-aee8-e2af7ccd62cc
 # ╟─b02ac7ae-0bde-4606-8478-6a31f40d88f6
-# ╟─41e502ea-a526-42c6-902c-ef6171d3417a
 # ╟─fec5ab30-22a4-4726-9b05-eda55b290b66
 # ╟─f3b73120-5e71-496f-8e6b-cac7be04bcf5
 # ╟─00000000-0000-0000-0000-000000000001
