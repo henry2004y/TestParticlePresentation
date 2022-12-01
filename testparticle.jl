@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.16
+# v0.19.9
 
 using Markdown
 using InteractiveUtils
@@ -71,30 +71,30 @@ md"""
 ### 非相对论情况
 
 ```math
-m\frac{d\mathbf{v}}{dt} = q(\mathbf{E} + \mathbf{v}\times\mathbf{B}) \tag{1}
+m\frac{\mathrm{d}\mathbf{v}}{\mathrm{d}t} = q(\mathbf{E} + \mathbf{v}\times\mathbf{B}) \tag{1}
 ```
 
 ### 相对论情况
 
-基于洛伦茨协变的四维动量方程：
+满足洛伦茨协变的四维动量方程：
 
 ```math
-\frac{\mathrm{d}p^\mu}{\mathrm{d}\tau} = \gamma q(E^\mu+\epsilon_{\mu \nu l}v^\nu B^l) \tag{2}
+\frac{\mathrm{d}p^\mu}{\mathrm{d}\tau} = \gamma qF^{\mu \nu}v_\nu \tag{2}
 ```
 
-其中$\gamma = 1/\sqrt{1-v^2/c^2}$， $\tau$为相对论时间， $p^\mu = \gamma m v^\mu$为三维动量。
+其中$\gamma = 1/\sqrt{1-v^2/c^2}$， $\tau$为固有时间， $p^\mu = \gamma m v^\mu$为四维动量，$F^{\mu\nu}$ 为电磁场张量。
 
-简化后有两种计算中可用的形式：
+简化后在三维空间中可写出两种计算中可用的形式：
 
  
 ```math
-\frac{\mathrm{d}(\gamma v^\mu)}{\mathrm{d}t} = \frac{q}{m}(E^\mu+\epsilon_{\mu \nu l}v^\nu B^l) \tag{3}
+\frac{\mathrm{d}(\gamma v^i)}{\mathrm{d}t} = \frac{q}{m}(E^i+\epsilon^{ijk}v_j B_k) \tag{3}
 ```
 
 或者
 
 ```math
-\frac{\mathrm{d}v^\mu}{\mathrm{d}t} = \frac{q}{m \gamma^3}(E^\mu+\epsilon_{\mu \nu l}v^\nu B^l) \tag{4}
+\frac{\mathrm{d}v^i}{\mathrm{d}t} = \frac{q}{m \gamma^3}(E^i+\epsilon^{ijk}v_j B_k) \tag{4}
 ```
 
 经过测试发现， Eq.(3) 的数值计算精度要好于 Eq.(4)。
@@ -273,7 +273,7 @@ end
 
 ## 实现:可视化
 
-- `Plot`： `DifferentialEquation`有原生支持
+- `Plot`： `DifferentialEquations`有原生支持
 
 
 - `PyPlot`：无原生支持，需要额外的获取轨迹的代码
@@ -367,7 +367,7 @@ TestParticleMakie = "~0.1.1"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.8.3"
+julia_version = "1.8.0-rc3"
 manifest_format = "2.0"
 project_hash = "2ca6f1e8d566b29d93d3552443181a58a5f44b66"
 
@@ -1143,7 +1143,7 @@ version = "0.6.3"
 [[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
-version = "7.84.0+0"
+version = "7.83.1+1"
 
 [[deps.LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -1835,7 +1835,7 @@ version = "1.10.0"
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
-version = "1.10.1"
+version = "1.10.0"
 
 [[deps.TensorCore]]
 deps = ["LinearAlgebra"]
@@ -2061,7 +2061,7 @@ version = "1.3.7+1"
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
-version = "1.48.0+0"
+version = "1.47.0+0"
 
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -2086,13 +2086,13 @@ version = "3.5.0+0"
 # ╟─cd16c734-bf02-4797-9c60-dcb54513fff0
 # ╟─bd3af018-1bf2-4200-84bd-35f596b723ce
 # ╟─5791598a-6fbb-11ed-3f03-e7f48288a468
-# ╟─5f976621-9acd-474a-a836-74f502274754
-# ╟─4bf7aa87-d070-4389-8670-090a99100370
+# ╠═5f976621-9acd-474a-a836-74f502274754
+# ╠═4bf7aa87-d070-4389-8670-090a99100370
 # ╟─bbcae7e7-2bdb-4a9c-8137-0c64cbc533b1
 # ╟─dc580613-f43c-4047-9e2a-aa55d6ac113f
 # ╟─91c29b75-62e3-44bc-a67a-c2d57ab1b059
 # ╟─164d6f9c-98cd-44d3-b443-5ee0d7fb146b
-# ╟─4c3be683-1d11-42d1-916c-b8318c0ecf3f
+# ╠═4c3be683-1d11-42d1-916c-b8318c0ecf3f
 # ╟─3fa20598-d32e-40b6-98e9-06496027c646
 # ╟─39135c86-8585-43a3-acd6-42f012aac65b
 # ╟─56ee3992-c701-41bc-a5df-679a76ec3e48
