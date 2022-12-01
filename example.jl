@@ -25,7 +25,10 @@ begin
 	prob = ODEProblem(trace!, stateinit, tspan, param)
 	# Trace trajectory and save positions & velocities
 	sol = solve(prob, Tsit5(); save_idxs=[1,2,3,4,5,6])
-	plot(sol)
+	f = plot(sol)
+	ps = [Point3f(2.0, 0.0, 0.0)]
+	ns = map(p -> Vec3f(0, 0, 2), ps)
+	arrows!(ps, ns, fxaa=true, linewidth=0.05, color=:blue3)
 end
 
 # Electron and proton example
@@ -52,7 +55,7 @@ let
 	#gcd = f[1:2, 1] = GridLayout()
 	#gd = gcd[2, 1] = GridLayout()
 	ax = Axis3(f[1,1], aspect=:data, title="Particle trajectories")
-    lines!(sol_e, linewidth=3, label="e")
+   lines!(sol_e, linewidth=3, label="e")
 	lines!(sol_p, linewidth=3, label="p")
 	#Legend(f[1,2], ax, nbanks=1)
 	#rowgap!(gd, 1)

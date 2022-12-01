@@ -37,13 +37,13 @@ md"""
 
 ## 什么是测试粒子？
 
-测试粒子是一种非自洽的场-粒子作用模型。完整的粒子相空间轨迹描述不仅需要反映场对粒子的作用，也需要反映粒子对场的作用。
+测试粒子是一个**非自洽**的场-粒子作用模型。完整的粒子相空间轨迹描述不仅需要反映场对粒子的作用，也需要反映粒子对场的作用。
 
-图示： 场 <---> 粒子
+**场** <--> **粒子**
 
 然而，作为近似处理，我们可以忽略少量粒子对场的反馈，而仅关注场对粒子的作用。
 
-图示： 场 ---> 粒子
+**场** --> **粒子**
 
 $(Resource("https://www.schoolphysics.co.uk/age14-16/Electricity%20and%20magnetism/Current%20electricity/text/Particles_and_fields/images/2.png"))
 
@@ -97,7 +97,7 @@ m\frac{\mathrm{d}\mathbf{v}}{\mathrm{d}t} = q(\mathbf{E} + \mathbf{v}\times\math
 \frac{\mathrm{d}v^i}{\mathrm{d}t} = \frac{q}{m \gamma^3}(E^i+\epsilon^{ijk}v_j B_k) \tag{4}
 ```
 
-经过测试发现， Eq.(3) 的数值计算精度要好于 Eq.(4)。
+经测试， Eq.(3) 的数值计算精度要好于 Eq.(4)。
 """
 
 # ╔═╡ bbcae7e7-2bdb-4a9c-8137-0c64cbc533b1
