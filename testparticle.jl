@@ -71,30 +71,30 @@ md"""
 ### 非相对论情况
 
 ```math
-m\frac{d\mathbf{v}}{dt} = q(\mathbf{E} + \mathbf{v}\times\mathbf{B}) \tag{1}
+m\frac{\mathrm{d}\mathbf{v}}{\mathrm{d}t} = q(\mathbf{E} + \mathbf{v}\times\mathbf{B}) \tag{1}
 ```
 
 ### 相对论情况
 
-基于洛伦茨协变的四维动量方程：
+满足洛伦茨协变的四维动量方程：
 
 ```math
-\frac{\mathrm{d}p^\mu}{\mathrm{d}\tau} = \gamma q(E^\mu+\epsilon_{\mu \nu l}v^\nu B^l) \tag{2}
+\frac{\mathrm{d}p^\mu}{\mathrm{d}\tau} = \gamma qF^{\mu \nu}v_\nu \tag{2}
 ```
 
-其中$\gamma = 1/\sqrt{1-v^2/c^2}$， $\tau$为相对论时间， $p^\mu = \gamma m v^\mu$为三维动量。
+其中$\gamma = 1/\sqrt{1-v^2/c^2}$， $\tau$为固有时间， $p^\mu = \gamma m v^\mu$为四维动量，$F^{\mu\nu}$ 为电磁场张量。
 
-简化后有两种计算中可用的形式：
+简化后在三维空间中可写出两种计算中可用的形式：
 
  
 ```math
-\frac{\mathrm{d}(\gamma v^\mu)}{\mathrm{d}t} = \frac{q}{m}(E^\mu+\epsilon_{\mu \nu l}v^\nu B^l) \tag{3}
+\frac{\mathrm{d}(\gamma v^i)}{\mathrm{d}t} = \frac{q}{m}(E^i+\epsilon^{ijk}v_j B_k) \tag{3}
 ```
 
 或者
 
 ```math
-\frac{\mathrm{d}v^\mu}{\mathrm{d}t} = \frac{q}{m \gamma^3}(E^\mu+\epsilon_{\mu \nu l}v^\nu B^l) \tag{4}
+\frac{\mathrm{d}v^i}{\mathrm{d}t} = \frac{q}{m \gamma^3}(E^i+\epsilon^{ijk}v_j B_k) \tag{4}
 ```
 
 经过测试发现， Eq.(3) 的数值计算精度要好于 Eq.(4)。
@@ -273,7 +273,7 @@ end
 
 ## 实现:可视化
 
-- `Plot`： `DifferentialEquation`有原生支持
+- `Plot`： `DifferentialEquations`有原生支持
 
 
 - `PyPlot`：无原生支持，需要额外的获取轨迹的代码
